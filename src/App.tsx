@@ -1,7 +1,9 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
-import userbase, { UserResult } from 'userbase-js'
+import userbase, { Item, UserResult } from 'userbase-js'
 
 const App: React.FC = () => {
+  const DATABASE_NAME = 'blueButton'
+
   const [user, setUser] = useState<UserResult>()
 
   useEffect(() => {
@@ -9,6 +11,11 @@ const App: React.FC = () => {
       .init({ appId: process.env.REACT_APP_USERBASE_APP_ID as string })
       .then(session => session.user && setUser(session.user))
   }, [])
+
+  useEffect(() => {
+    if (user)
+      userbase.openDatabase({ databaseName: DATABASE_NAME, changeHandler })
+  }, [user])
 
   const [regForm, setRegForm] = useState<{
     username?: string
@@ -19,6 +26,8 @@ const App: React.FC = () => {
     username?: string
     password?: string
   }>({ username: '', password: '' })
+
+  const [numClicks, setNumCicks] = useState<number>()
 
   const handleRegInputChange = (event: ChangeEvent<HTMLInputElement>) =>
     setRegForm({ ...regForm, [event.target.name]: event.target.value })
@@ -59,6 +68,14 @@ const App: React.FC = () => {
       .catch(err => alert(err))
   }
 
+  const handleBlueButtonClick = () => {
+    userbase.insertItem({ databaseName: DATABASE_NAME, item: new Date() })
+  }
+
+  const changeHandler = (items: Item[]) => {
+    setNumCicks(items.length)
+  }
+
   return (
     <div>
       {user ? (
@@ -66,6 +83,23 @@ const App: React.FC = () => {
           <div>
             Signed in as {user.username}.{' '}
             <button onClick={handleLogout}>Log out</button>
+          </div>
+
+          <div>
+            <h2>Click the blue button</h2>
+            <button
+              style={{
+                fontSize: '25px',
+                backgroundColor: 'blue',
+                color: 'white'
+              }}
+              onClick={handleBlueButtonClick}
+            >
+              The Blue Button
+            </button>
+            <div style={{ marginTop: '25px' }}>
+              You have clicked: {numClicks} times.
+            </div>
           </div>
         </div>
       ) : (
