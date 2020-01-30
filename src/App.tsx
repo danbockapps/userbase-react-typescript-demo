@@ -52,55 +52,73 @@ const App: React.FC = () => {
         .catch(err => alert(err))
   }
 
+  const handleLogout = () => {
+    userbase
+      .signOut()
+      .then(() => setUser(undefined))
+      .catch(err => alert(err))
+  }
+
   return (
     <div>
-      <h2>Register</h2>
-      <form onSubmit={handleRegSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={regForm?.username}
-            onChange={handleRegInputChange}
-          />
-        </label>
+      {user ? (
+        <div>
+          <div>
+            Signed in as {user.username}.{' '}
+            <button onClick={handleLogout}>Log out</button>
+          </div>
+        </div>
+      ) : (
+        <div>
+          <h2>Register</h2>
+          <form onSubmit={handleRegSubmit}>
+            <label>
+              Username:
+              <input
+                type="text"
+                name="username"
+                value={regForm?.username}
+                onChange={handleRegInputChange}
+              />
+            </label>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={regForm?.password}
-            onChange={handleRegInputChange}
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+            <label>
+              Password:
+              <input
+                type="password"
+                name="password"
+                value={regForm?.password}
+                onChange={handleRegInputChange}
+              />
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
 
-      <h2>Log in</h2>
-      <form onSubmit={handleLoginSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            name="username"
-            value={loginForm?.username}
-            onChange={handleLoginInputChange}
-          />
-        </label>
+          <h2>Log in</h2>
+          <form onSubmit={handleLoginSubmit}>
+            <label>
+              Username:
+              <input
+                type="text"
+                name="username"
+                value={loginForm?.username}
+                onChange={handleLoginInputChange}
+              />
+            </label>
 
-        <label>
-          Password:
-          <input
-            type="password"
-            name="password"
-            value={loginForm?.password}
-            onChange={handleLoginInputChange}
-          />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+            <label>
+              Password:
+              <input
+                type="password"
+                name="password"
+                value={loginForm?.password}
+                onChange={handleLoginInputChange}
+              />
+            </label>
+            <input type="submit" value="Submit" />
+          </form>
+        </div>
+      )}
     </div>
   )
 }
